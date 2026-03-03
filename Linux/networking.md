@@ -140,3 +140,55 @@ or
 ```bash
 ip route add default via 0.0.0.0
 ```
+
+## Troubleshooting
+
+### Check the host interfaces and connectivity
+
+* Ensure the primary interface is up
+
+```bash
+ip link
+```
+
+### Check DNS resolution
+
+* Ensure the name is resolved to an IP address
+
+```bash
+nslookup caleston-repo-01
+```
+
+### Check the connectivity to the remote host
+
+```bash
+ping caleston-repo-01
+```
+
+### Check the route
+
+* show the number of hops between the source and the remote server
+
+```bash
+traceroute 192.168.2.5
+```
+
+### Troubleshoot the remote server
+
+* check if the proccess is running on port 80
+
+```bash
+netstat -an | grep 80 | grep -i LISTEN
+```
+
+* check the interfaces on the server
+
+```bash
+ip link
+```
+
+* if the interface is down, bring it up by
+
+```bash
+ip link set dev enp1s0f1 up
+```
