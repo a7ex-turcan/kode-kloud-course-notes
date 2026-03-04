@@ -108,3 +108,85 @@ df -hP | grep /dev/sdb1
   * Options - (RW - read/write, RO = Readonly)
   * Dump - 0 = ignore, 1 take backup
   * Pass - 0 = ignore, 1 or 2 FSCK filesystem check enforced
+
+## DAS NAS and SAN
+
+### DAS - direct attached storage
+
+* attached directly to the host system
+* is seen as block device
+* excelent performance
+* dedicated to a single host
+
+### NAS - network attached storage
+
+* data goes through the network
+* exported via NFS
+* centralized shared storage
+
+### SAN - storage area network
+
+* High throughput
+* Provided via LAN
+* detected by the host as raw disk
+* uses FCP or Ethernet
+* hosts mission critical applications
+
+## NFS file system
+
+* doesn't store the data in blocks
+* stores data as files
+* works on a client - server model
+
+* To export nfs directories:
+
+```bash
+# all
+exportfs -a
+
+# explicit
+exortfs -o <client-ip>:/software/repos
+```
+
+* Once exported, you can then mount the directory on the client via the `mount` command
+
+## LVM - Logical Volume Manager
+
+* Allows grouping of multiple physical volumes
+* From the group - you can then carve logical volumes
+* Logical volumes can be resized dynamically
+
+* required pacakge: `lvm2`
+
+* to create a logical volume:
+  * create a physical volume on a partition: `pvcreate /dev/sdv`
+  * create a volume group: `vgcreate caleston_vg /dev/sdb`
+  * `pvdisplay` - displays all the Physical volumes
+  * `vgdisplay` - displays all the Volume Groups
+  * create logical volumes: 
+
+    ```bash
+    # -L = linear volume
+    # vol1 - name
+    # caleston_vg - group
+    lvcreate -L 1G -n vol1 caleston_vg
+    ```
+
+  * `lvdisplay` - displays the volume
+  * `lvs` - displays all the volumes
+  * Create a file system: `mkfs.ext4 /dev/caleston_vg/vol1`
+  * mount: `mount -t ext4 /dev/caleston_vg/vol1 /mnt/vol1`
+
+* To resize:
+  * `vgs` - displays the volume groups
+  * resize logical volume:
+
+    ```bash
+    lvresize -L +1G -n /dev/caleston_vg/vol1
+    ```
+    
+  * resize the file system:
+    
+    ```bash
+    resize2fs /dev/caleston_vg/vol1
+    ```
