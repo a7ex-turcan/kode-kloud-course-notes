@@ -20,9 +20,18 @@ docker run -v <host-dir>:<container-dir>
 ```
 
 ## inspect
+
 * provides additional details for the container:
 `docker inspect <docker-container>`
 
 ## logs
+
 * `docker logs <container-id>`
 
+## Linking containers together
+
+* Allows containers to see eachother
+`docker run --link redis:redis`
+
+* under the hood this will create an entry in the `/etc/hosts` file
+* Links are deprecated in favour of more modern ways
