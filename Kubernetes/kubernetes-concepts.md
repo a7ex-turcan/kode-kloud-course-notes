@@ -40,6 +40,12 @@ kubectl run nginx --image nginx
 kubectl get pods
 ```
 
+* To Edit a pod
+
+```bash
+kubectl edit pod 
+```
+
 ### Pods with YAML
 
 * K8s uses yml files as input to create various type of objects
@@ -77,6 +83,12 @@ kubectl create -f pod-definition.yml
 
 * To list the pods: `kubectl get pods`
 * To see detaile info about the pod: `kubectl describe pod myapp-pod`
+
+* To extract a pod definition file from a pod
+
+```bash
+kubectl get pod -o yaml > pod-definition.yaml
+```
 
 ## Replication Controllers and ReplicaSets
 
