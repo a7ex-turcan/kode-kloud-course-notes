@@ -248,3 +248,87 @@ kubectl rollout history deployment/<deployment-name>
 ```bash
 kubectl rollout undo deployment myapp-deployment
 ```
+
+## Namespaces
+
+* the default namespace: `default`
+* the internal services of k8s are in the: `kube-system`
+* `kube-public`: resources that are availalbe to all users
+* namespaces allow for isolation
+* each namespace can have its own set of policies
+* each namespace can also have a defined quota of resources
+
+* to create a namespacce
+
+* a service in one namespace can reach a service in another namespace by appending the namespace name to the name of the service:
+
+```bash
+# cluster.loca - the domain of the cluster
+# svc - the subdomain for services
+# dev - the namespace
+# db-service - the name of the service
+ping db-service.dev.svc.cluser.local
+```
+
+* to list pods in a namespace
+
+```bash
+kubeclt get pods --namespace=kube-sys
+```
+
+* to create a pod in another namespace
+
+```bash
+kubectl create -f <definition-file> --namespace dev
+```
+
+* namespace can also be defined in the YAML Definition file
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: myapp-pod
+    namespace: dev
+
+....
+```
+
+* to create a namespace
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: dev
+```
+
+* to switch to a given namespace
+
+```bash
+kubectl config set-context $(kubectl config current-context) --namespace=dev
+```
+
+* to view all pods from all namespaces
+
+```bash
+kubectl get pods --all-namespaces
+```
+
+### Resource quota
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+    name: compute-quota
+    namespace: dev
+
+spec:
+    hard:
+        pods: "10"
+        requests.cpu: "4"
+        requests.memroy: 5Gi
+        limits.cpu: "10"
+        limits.memory: 10Gi
+```
