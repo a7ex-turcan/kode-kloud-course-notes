@@ -186,7 +186,7 @@ kubectl scale --replicas=6 replicaset myapp-replicaset
 ## Deployments
 
 * One layer above ReplicaSet
-* Provides rolling updates 
+* Provides rolling updates
 * Undo changes
 
 * Deployment definition file:
@@ -502,33 +502,33 @@ echo -n <the encoded value> | base64 --decode
 
 ### Injecting Secrets into a pod
 
-    ```yaml
-    apiVersions: v1
-    kind: Pod
-    metadata:
-        name: simple-webapp-colo
-    spec:
-        containers:
-        - name: my-container
-          image: my-image
-          
-          envFrom:
-          # Links the pod to the entire secret file
-          - secretRef:
+```yaml
+apiVersions: v1
+kind: Pod
+metadata:
+    name: simple-webapp-colo
+spec:
+    containers:
+    - name: my-container
+    image: my-image
+    
+    envFrom:
+    # Links the pod to the entire secret file
+    - secretRef:
+            name: app-secret
+    
+    env:
+        - name: APP_COLOR
+        # binds the APP_COLOR env var to a value defined in the app-config config map
+        valueFrom:
+            secretKeyRef:
                 name: app-secret
-          
-          env:
-            - name: APP_COLOR
-              # binds the APP_COLOR env var to a value defined in the app-config config map
-              valueFrom:
-                secretKeyRef:
-                    name: app-secret
-                    key: APP_COLOR
-          
-          # Mounts the entire secret file as one file per secret
-          # The name of teh file is the secret key, and the contents: the value
-          volumes:
-          - name: app-secret-volume
-            configMap:
-                name: app-secret
-    ```
+                key: APP_COLOR
+    
+    # Mounts the entire secret file as one file per secret
+    # The name of teh file is the secret key, and the contents: the value
+    volumes:
+    - name: app-secret-volume
+        configMap:
+            name: app-secret
+```
