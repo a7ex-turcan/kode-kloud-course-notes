@@ -72,8 +72,10 @@ spec:
     containers:
         - name: nginx-container
           image: nginx
-          # Allows passing arguments into the container
+          # Allows passing arguments into the container. same as vaing a CMD in the docker file
           args: ["10"]
+          # Allows overriding the docker file's default ENTRYPOINT
+          command: ["sleep"]
     
 ```
 
@@ -334,3 +336,99 @@ spec:
         limits.cpu: "10"
         limits.memory: 10Gi
 ```
+
+## Env Vars
+
+* To set an env variable when creating a pod via a definition file:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: sample-app
+spec:
+    containers:
+        - name: sample-app-container
+          image: image-name
+          env:
+            - name: MyEnvVar
+              value: MyEnvVarValue
+```
+
+## Config Maps
+
+* Makes it easy to share env vars between different pods
+* Centralizes configuration data
+
+* To view the config maps:
+
+```bash
+kubectl get configmaps
+```
+
+* To Configure config maps:
+  * Create the config map
+    * Imperative:
+
+        ```bash
+        kubectl create configmap <config-name> \
+        --from-literal=key=value \
+        --from-literal=key1=value1
+        ```
+
+        or
+
+        ```bash
+        kubectl create configmap <config-name> \
+        --from-file=app_config.properties
+        ```
+
+    * Declarative
+
+    ```yaml definition.yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+        name: app-config
+
+    data:
+        APP_COLOR: blue
+        APP_MODE: prod
+    ```
+
+    then
+
+    ```bash
+    kubectl create -f definition.yaml
+    ```
+
+  * Inject them in the pod
+
+    ```yaml
+    apiVersions: v1
+    kind: Pod
+    metadata:
+        name: simple-webapp-colo
+    spec:
+        containers:
+        - name: my-container
+          image: my-image
+          
+          envFrom:
+          # Links the pod to the entire config map
+          - configMapRef:
+            name: app-config
+          
+          env:
+            - name: APP_COLOR
+              # binds the APP_COLOR env var to a value defined in the app-config config map
+              valueFrom:
+                configMapKeyRef:
+                    name: app-config
+                    key: APP_COLOR
+          
+          volumes:
+          - name: app-config-volume
+            configMap:
+                name: app-config
+    ```
