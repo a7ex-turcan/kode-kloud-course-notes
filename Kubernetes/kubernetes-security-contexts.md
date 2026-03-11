@@ -15,9 +15,7 @@ spec:
     securityContext:
         # sets the user id for the pod
         runAsUser: 1000
-        capabilities:
-            add: ["MAC_ADMIN"]
-            
+       
     containers:
         - name: ubuntu
           image: ubuntu
@@ -26,4 +24,7 @@ spec:
           securityContext:
           # sets the user id for the pod
               runAsUser: 1000
+              # updates capabilities of the container. this is only supported at the container level
+              capabilities:
+                add: ["MAC_ADMIN"]
 ```
