@@ -72,6 +72,8 @@ spec:
     containers:
         - name: nginx-container
           image: nginx
+          # Allows passing arguments into the container
+          args: ["10"]
     
 ```
 
