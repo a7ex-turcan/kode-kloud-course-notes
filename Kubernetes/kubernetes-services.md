@@ -57,7 +57,7 @@ kubectl get services
 
 ### The ClusterIP definition file
 
-```bash
+```yaml
 apiVersion: v1
 kind: Service
 
