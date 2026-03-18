@@ -76,3 +76,42 @@ kubectl create token dashboard-sa --duration 2h
 
 * The token can then be used as a Bearer token
 
+## Taints and Tolerations
+
+* Used to set restrictions on what pods can be scheduled on a node
+* Taints are placed over Nodes
+* By default Pods have no tolerations
+* Tolerations are placed on the Pods
+
+### Taints
+
+```bash
+kubectl taint nodes node-name key=value:taint-effect
+```
+
+#### Taint effects
+
+* `NoSchedule` - no pods will be scheduled on the node
+* `PreferNoSchedule` - a pods may still be scheduled on that noe
+* `NoExecute` - no new pods will be scheduled on the node and any existing pod will be evicted
+
+## Tolerations
+
+To add a tolleration on a pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: my-app
+    spec:
+        containers:
+        - name: nginx-container
+          image: nginx
+        tolerations:
+        # all these values need to be encoded in double quotes
+        - key: "app"
+          operator: "Equal"
+          value: "blue"
+          effect: "NoSchedule"
+```
