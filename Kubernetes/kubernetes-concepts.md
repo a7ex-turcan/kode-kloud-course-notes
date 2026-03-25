@@ -634,3 +634,5 @@ spec:
 * During Execution: pods will continue to run and any changes in node labels will be ignored
 
 #### `requiredDuringSchedulingRequiredDuringExecution`
+
+## Node Affinity vs Tains and Tolerations
