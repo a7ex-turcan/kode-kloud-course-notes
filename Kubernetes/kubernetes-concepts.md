@@ -532,3 +532,105 @@ spec:
         configMap:
             name: app-secret
 ```
+
+## Taints and Tolerations
+
+* Used to set restrictions on what pods can be scheduled on a node
+* Taints are placed over Nodes
+* By default Pods have no tolerations
+* Tolerations are placed on the Pods
+
+### Taints
+
+```bash
+kubectl taint nodes node-name key=value:taint-effect
+```
+
+#### Taint effects
+
+* `NoSchedule` - no pods will be scheduled on the node
+* `PreferNoSchedule` - a pods may still be scheduled on that noe
+* `NoExecute` - no new pods will be scheduled on the node and any existing pod will be evicted
+
+## Tolerations
+
+To add a tolleration on a pod
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: my-app
+    spec:
+        containers:
+        - name: nginx-container
+          image: nginx
+        tolerations:
+        # all these values need to be encoded in double quotes
+        - key: "app"
+          operator: "Equal"
+          value: "blue"
+          effect: "NoSchedule"
+```
+
+## Node Selectors
+
+* Allow selecting a specific node(s) for a pod
+
+```yaml
+apiVersion:
+kind: Pod
+metadata:
+    name: myapp-pod
+spec:
+    containers:
+    - name: data-processor
+      image: data-processor
+    nodeSelector:
+        # labels on the node
+        size: Large
+```
+
+## Node affinity
+
+* Ensures that pods are hosted on a particular node
+* Allows providing advanced expressions unlike the `Node Selectors`
+
+
+
+```yaml
+apiVersion:
+kind: Pod
+metadata: myapp-pod
+    name: myapp-pod
+spec:
+    containers:
+    - name: data-processor
+      image: data-processor
+    affinity:
+        nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: size
+                    # other operators: NotIn, Exists and others
+                    operator: In
+                    values:
+                    - Large
+```
+
+### Node affinity types
+
+#### `requiredDuringSchedulingIgnoredDuringExecution`
+
+* During Scheduling: affinity rules are taken into consideration
+* If no nodes are available, the pod will not be scheduled
+* During Execution: pods will continue to run and any changes in node labels will be ignored
+
+#### `preferredDuringSchedulingIgnoredDuringExecution`
+
+* During Scheduling: affinity rules are taken into consideration
+* If no nodes are available, the pod will be scheduled on another node
+* During Execution: pods will continue to run and any changes in node labels will be ignored
+
+#### `requiredDuringSchedulingRequiredDuringExecution`
