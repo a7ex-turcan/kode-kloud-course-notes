@@ -1,4 +1,4 @@
-# Readiness probes
+# Observability
 
 ## Pod Status
 
@@ -56,6 +56,51 @@ spec:
 
         # allows configuring an initial delay before excuting the probe
         initialDelay: 10
+
+        # how often to probe
+        periodSeconds: 5
+
+        # overrides the default (3) attemts count
+        failureThreshold: 8
+```
+
+## The Liveness Probes
+
+* Can help to determine if the pod can actually process trafic
+* If the liveness probe fails the pod will be terminated or restarted
+
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata: simple-webapp
+    name: simple-webapp
+    lables:
+        name: simple-webapp
+spec:
+    containers:
+    - name: simple-webapp
+      image: simple-webapp
+      ports:
+      - containerPort: 8080
+      livenessProbe:
+        # makes an http request
+        httpGet:
+            path: /api/ready
+            port: 80
+
+        # for tcp
+        tcpSocket:
+            port: 3306
+        
+        # for a exec command
+        exec:
+            command:
+            - cat
+            - /app/is_ready
+
+        # allows configuring an initial delay before excuting the probe
+        initialDelaySeconds: 10
 
         # how often to probe
         periodSeconds: 5
