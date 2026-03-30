@@ -108,3 +108,13 @@ spec:
         # overrides the default (3) attemts count
         failureThreshold: 8
 ```
+
+## Logs
+
+```bash
+# Container name is only required for multicontainer pods
+kubectl logs -f <pod-name> <container-name>
+```
+
+## Monitoring
+
